@@ -96,18 +96,19 @@ static void displayPatient(const Patient &patient)
 {
     string table = R"(
 	+--------------------+--------------------------------------+
-	| Field              | Details                              |
+	  Field              | Details                              
 	+--------------------+--------------------------------------+
-	| ID                 | {{ID}}                                |
-	|                    |                                      |
-	| Name               | {{NAME}}                                 |
-	|                    |                                      |
-	| Age                | {{AGE}}                                   |
-	|                    |                                      |
-	| Gender             | {{GENDER}}                                 |
-	|                    |                                      |
-	| Contact            | {{CONTACT}}                          |
-	+--------------------+--------------------------------------+)";
+	  ID                 | {{ID}}                                
+	                     |                                      
+	  Name               | {{NAME}}                             
+	                     |                                      
+	  Age                | {{AGE}}                              
+	                     |                                      
+	  Gender             | {{GENDER}}                           
+	                     |                                      
+	  Contact            | {{CONTACT}}                          
+	+--------------------+--------------------------------------+
+)";
 
     size_t position;
 
@@ -320,6 +321,7 @@ void displayPatientMenu()
             Patient *patient = list.searchById(id);
             if (patient)
             {
+                displayHeading("\t\t\tSearch Patient by ID\n");
                 displayPatient(*patient);
             }
             else
