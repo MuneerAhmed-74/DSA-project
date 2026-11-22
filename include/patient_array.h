@@ -1,7 +1,7 @@
 #ifndef PATIENTARRAY_H
 #define PATIENTARRAY_H
 
-#include "Patient.h"
+#include "patient.h"
 #include <string>
 #include <vector>
 using namespace std;
