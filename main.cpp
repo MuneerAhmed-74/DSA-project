@@ -58,14 +58,16 @@ void registerPatient(PatientList& list) {
 
 void updatePatient(PatientList& list) {
     int id;
-    cout << "Enter ID to update: ";
+    list.displayAll();
+    cout << "Enter ID to update (e.g. 1 for P-001): ";
     cin >> id;
     list.updatePatient(id);
 }
 
 void deletePatient(PatientList& list) {
     int id;
-    cout << "Enter ID to delete: ";
+    list.displayAll();
+    cout << "Enter ID to delete (e.g. 1 for P-001): ";
     cin >> id;
     list.deletePatient(id);
 }
