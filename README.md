@@ -14,9 +14,14 @@ Patient Registration and Management System, a console application in C++ built f
 
 ## Build and run
 
+On linux:
 ```
-g++ main.cpp PatientList.cpp -o main
-./main
+g++ src/*.cpp -Iinclude && ./a.out
+```
+On windows:
+```
+g++ src/*.cpp -Iinclude
+.\a.exe
 ```
 
 On Windows run `main.exe` instead of `./main`.
