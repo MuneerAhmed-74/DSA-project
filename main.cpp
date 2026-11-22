@@ -33,12 +33,25 @@ void registerPatient(PatientList& list) {
     cout << "Enter Name: ";
     getline(cin, name);
     name = list.formatName(name);
+
     cout << "Enter Age: ";
     cin >> age;
-    cin.ignore();
+    while (cin.fail() || age <= 0 || age > 120) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid age! Enter again: ";
+        cin >> age;
+    }
+    cin.ignore(1000, '\n');
+
     gender = list.getGender();
+
     cout << "Enter Contact: ";
     getline(cin, contact);
+    while (contact.size() != 11 || contact.find_first_not_of("0123456789") != string::npos) {
+        cout << "Invalid! 11 digits required: ";
+        getline(cin, contact);
+    }
 
     list.addPatient(name, age, gender, contact);
 }
