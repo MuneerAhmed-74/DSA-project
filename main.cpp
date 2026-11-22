@@ -59,12 +59,12 @@ void deletePatient(PatientList& list) {
 
 void searchPatient(PatientList& list) {
     int id;
-    cout << "Enter ID to search: ";
+    cout << "Enter ID to search (e.g. 1 for P-001): ";
     cin >> id;
 
     Patient* p = list.searchById(id);
     if (p != NULL) {
-        cout << "Found -> ID: " << p->id
+        cout << "Found -> ID: " << formatId(p->id)
              << " | Name: " << p->name
              << " | Age: " << p->age
              << " | Gender: " << p->gender

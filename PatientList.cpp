@@ -59,7 +59,7 @@ void PatientList::addPatient(string name, int age, string gender, string contact
         temp->next = newNode;
     }
     saveToFile();
-    cout << "Patient registered successfully. ID: " << id << endl;
+    cout << "Patient registered successfully. ID: " << formatId(id) << endl;
 }
 
 Patient* PatientList::searchById(int id) {
@@ -175,7 +175,7 @@ void PatientList::displayAll() {
     cout << "\n--- Patient Records ---" << endl;
     Patient* temp = head;
     while (temp != NULL) {
-        cout << "ID: " << temp->id
+        cout << "ID: " << formatId(temp->id)
              << " | Name: " << temp->name
              << " | Age: " << temp->age
              << " | Gender: " << temp->gender
