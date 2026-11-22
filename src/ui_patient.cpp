@@ -1,4 +1,5 @@
 #include "ui_patient.h"
+#include "cli_ui.h"
 #include "patient_array.h"
 #include "patient.h"
 #include <iostream>
@@ -8,116 +9,109 @@
 
 using namespace std;
 
-namespace
+static void displayMenuOptions()
 {
+    cout << "\n\tSelect an action to perform:\n"
+         << "\n\t |1. Display" << "\t\t |3. Sort" << "\t\t|5. Search By ID"
+         << "\n\t |" << "\t\t\t |" << "\t\t\t|"
+         << "\n\t |2. Exit"
+         << "\t\t |4. Update" << "\t\t|6. Search By Name"
+         << "\n\n\t\tEnter choice: ";
+}
 
-    void displayMenu()
+static int getChoice()
+{
+    int choice;
+    if (!(cin >> choice))
     {
-        cout << "\n1. Register Patient\n";
-        cout << "2. Update Patient\n";
-        cout << "3. Delete Patient\n";
-        cout << "4. Search Patient by ID\n";
-        cout << "5. Sort Patients by ID\n";
-        cout << "6. Display All Patients\n";
-        cout << "0. Exit\n";
-        cout << "Enter choice: ";
-    }
-
-    int getChoice()
-    {
-        int choice;
-        if (!(cin >> choice))
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input!\n";
-            return -1;
-        }
+        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        return choice;
+        cout << "Invalid input!\n";
+        return -1;
     }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return choice;
+}
 
-    string getValidName()
+static string getValidName()
+{
+    string name;
+    getline(cin, name);
+
+    bool inWord = false;
+    for (char &c : name)
     {
-        string name;
-        getline(cin, name);
-
-        bool inWord = false;
-        for (char &c : name)
+        if (c == ' ')
         {
-            if (c == ' ')
-            {
-                inWord = false;
-            }
-            else
-            {
-                c = inWord ? static_cast<char>(tolower(static_cast<unsigned char>(c)))
-                           : static_cast<char>(toupper(static_cast<unsigned char>(c)));
-                inWord = true;
-            }
+            inWord = false;
         }
-        return name;
-    }
-
-    string getGender()
-    {
-        int choice;
-        while (true)
+        else
         {
-            cout << "Select Gender:\n1. Male\n2. Female\n3. Other\nChoice: ";
-            if (cin >> choice && choice >= 1 && choice <= 3)
-            {
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                break;
-            }
-            cin.clear();
+            c = inWord ? static_cast<char>(tolower(static_cast<unsigned char>(c)))
+                       : static_cast<char>(toupper(static_cast<unsigned char>(c)));
+            inWord = true;
+        }
+    }
+    return name;
+}
+
+static string getGender()
+{
+    int choice;
+    while (true)
+    {
+        cout << "Select Gender:\n1. Male\n2. Female\n3. Other\nChoice: ";
+        if (cin >> choice && choice >= 1 && choice <= 3)
+        {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid choice!\n";
+            break;
         }
-
-        if (choice == 1)
-            return "Male";
-        if (choice == 2)
-            return "Female";
-        return "Other";
-    }
-
-    int getPatientId(const string &prompt)
-    {
-        int id;
-        cout << prompt;
-        while (!(cin >> id) || id <= 0)
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid ID! Enter again: ";
-        }
+        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        return id;
+        cout << "Invalid choice!\n";
     }
 
-    void displayPatients(const PatientList &list)
+    if (choice == 1)
+        return "Male";
+    if (choice == 2)
+        return "Female";
+    return "Other";
+}
+
+static int getPatientId(const string &prompt)
+{
+    int id;
+    cout << prompt;
+    while (!(cin >> id) || id <= 0)
     {
-        const vector<Patient> &patients = list.getPatients();
-        if (patients.empty())
-        {
-            cout << "No patients registered yet.\n";
-            return;
-        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid ID! Enter again: ";
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return id;
+}
 
-        cout << "\n--- Patient Records ---\n";
-        for (const Patient &patient : patients)
-        {
-            cout << "ID: " << formatId(patient.id)
-                 << " | Name: " << patient.name
-                 << " | Age: " << patient.age
-                 << " | Gender: " << patient.gender
-                 << " | Contact: " << patient.contact << '\n';
-        }
-        cout << "-----------------------\n";
+static void displayPatients(const PatientList &list)
+{
+    const vector<Patient> &patients = list.getPatients();
+    if (patients.empty())
+    {
+        cout << "No patients registered yet.\n";
+        return;
     }
 
-} // namespace
+    cout << "\n--- Patient Records ---\n";
+    for (const Patient &patient : patients)
+    {
+        cout << "ID: " << formatId(patient.id)
+             << " | Name: " << patient.name
+             << " | Age: " << patient.age
+             << " | Gender: " << patient.gender
+             << " | Contact: " << patient.contact << '\n';
+    }
+    cout << "-----------------------\n";
+}
 
 void displayPatientMenu()
 {
@@ -126,7 +120,8 @@ void displayPatientMenu()
 
     do
     {
-        displayMenu();
+        displayHeading("\t\t\tManage Patients\n");
+        displayMenuOptions();
         choice = getChoice();
 
         if (choice == 1)
