@@ -5,6 +5,8 @@ using namespace std;
 
 void clearScreen();
 void typeWriter(const std::string &text, int);
+void displayBorder();
+void displayHeading();
 void displayLogo();
 void displayMenu();
 void displayAbout();

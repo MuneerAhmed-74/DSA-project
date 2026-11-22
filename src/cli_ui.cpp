@@ -3,6 +3,7 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <string>
 using namespace std;
 
 void clearScreen()
@@ -22,5 +23,21 @@ void typeWriter(const std::string &text, int delay)
         std::cout << c << std::flush;
         std::this_thread::sleep_for(delayTime);
     }
-    std::cout << std::endl;
+}
+
+void border()
+{
+    cout << "\t+";
+    for (int i = 0; i < 45; i++)
+        cout << "-";
+    cout << "+\n";
+}
+
+void displayHeading(string text)
+{
+    clearScreen();
+    displayLogo();
+    border();
+    typeWriter(text, 50);
+    border();
 }
