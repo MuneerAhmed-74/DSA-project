@@ -1,8 +1,6 @@
 #include "patient_array.h"
-#include <iostream>
+#include <algorithm>
 #include <fstream>
-#include <utility>
-#include <cctype>
 
 PatientList::PatientList()
 {
@@ -16,283 +14,194 @@ PatientList::~PatientList()
 
 void PatientList::bubbleSort()
 {
-    bool swapped;
-    do
+    for (size_t i = 0; i < patients.size(); ++i)
     {
-        swapped = false;
-        for (size_t i = 0; i + 1 < patients.size(); i++)
+        for (size_t j = 0; j + 1 < patients.size() - i; ++j)
         {
-            if (patients[i].id > patients[i + 1].id)
+            if (patients[j].id > patients[j + 1].id)
             {
-                swap(patients[i], patients[i + 1]);
-                swapped = true;
+                std::swap(patients[j], patients[j + 1]);
             }
         }
-    } while (swapped);
+    }
 }
 
 int PatientList::binarySearch(int id)
 {
-    bubbleSort();
     int low = 0;
-    int high = (int)patients.size() - 1;
+    int high = static_cast<int>(patients.size()) - 1;
+
     while (low <= high)
     {
         int mid = low + (high - low) / 2;
         if (patients[mid].id == id)
-        {
             return mid;
-        }
         if (patients[mid].id < id)
-        {
             low = mid + 1;
-        }
         else
-        {
             high = mid - 1;
-        }
     }
     return -1;
 }
 
-bool PatientList::patientExists(int id)
-{
-    return binarySearch(id) != -1;
-}
-
 int PatientList::getNextId()
 {
-    if (patients.empty())
-    {
-        return 1;
-    }
-    return patients.back().id + 1;
+    return patients.empty() ? 1 : patients.back().id + 1;
 }
 
-string PatientList::getGender()
+bool PatientList::addPatient(const std::string &name, int age,
+                             const std::string &gender, const std::string &contact,
+                             const std::string &email)
 {
-    cout << "Select Gender:\n1. Male\n2. Female\n3. Other" << endl;
-    int c;
-    while (true)
-    {
-        cout << "Choice: ";
-        if (cin >> c && c >= 1 && c <= 3)
-            break;
-        cin.clear();
-        cin.ignore(1000, '\n');
-        cout << "Invalid choice!" << endl;
-    }
-    cin.ignore(1000, '\n');
-    if (c == 1)
-        return "Male";
-    if (c == 2)
-        return "Female";
-    return "Other";
-}
+    if (name.empty() || age <= 0 || age > 120 || contact.size() != 11)
+        return false;
 
-string PatientList::formatName(string name)
-{
-    for (size_t i = 0; i < name.size(); i++)
-    {
-        if (i == 0 || name[i - 1] == ' ')
-        {
-            name[i] = toupper(name[i]);
-        }
-        else
-        {
-            name[i] = tolower(name[i]);
-        }
-    }
-    return name;
-}
+    if (contact.find_first_not_of("0123456789") != std::string::npos)
+        return false;
 
-void PatientList::addPatient(string name, int age, string gender, string contact)
-{
-    if (age <= 0)
-    {
-        cout << "Invalid Age!" << endl;
-        return;
-    }
+    if (email.find('@') == std::string::npos)
+        return false;
+
     int id = getNextId();
-
-    patients.push_back(Patient(id, name, age, gender, contact));
-    size_t i = patients.size() - 1;
-    while (i > 0 && patients[i - 1].id > patients[i].id)
-    {
-        swap(patients[i - 1], patients[i]);
-        i--;
-    }
-    cout << "Patient registered successfully. ID: " << formatId(id) << endl;
+    patients.push_back(Patient(id, name, age, gender, contact, email));
+    bubbleSort();
+    saveToFile();
+    return true;
 }
 
 Patient *PatientList::searchById(int id)
 {
+    bubbleSort();
     int index = binarySearch(id);
-    if (index == -1)
-    {
-        return NULL;
-    }
-    return &patients[index];
+    return index == -1 ? nullptr : &patients[index];
 }
 
-void PatientList::updatePatient(int id)
+bool PatientList::updateEmail(int id, const std::string &email)
 {
-    Patient *target = searchById(id);
-    if (target == NULL)
-    {
-        cout << "Patient not found!" << endl;
-        return;
-    }
+    Patient *patient = searchById(id);
+    if (!patient || email.find('@') == std::string::npos)
+        return false;
 
-    int choice;
-    do
-    {
-        cout << "\n1. Name\n2. Age\n3. Gender\n4. Contact\n0. Done\nWhat to update: ";
-        if (!(cin >> choice))
-        {
-            cin.clear();
-            choice = -1;
-        }
-        cin.ignore(1000, '\n');
-
-        if (choice == 1)
-        {
-            cout << "Enter New Name: ";
-            getline(cin, target->name);
-            target->name = formatName(target->name);
-        }
-        else if (choice == 2)
-        {
-            int newAge = 0;
-            cout << "Enter New Age: ";
-            cin >> newAge;
-            cin.clear();
-            cin.ignore(1000, '\n');
-            if (newAge <= 0 || newAge > 120)
-            {
-                cout << "Invalid Age!" << endl;
-            }
-            else
-            {
-                target->age = newAge;
-            }
-        }
-        else if (choice == 3)
-        {
-            target->gender = getGender();
-        }
-        else if (choice == 4)
-        {
-            string newContact;
-            cout << "Enter New Contact: ";
-            getline(cin, newContact);
-            if (newContact.size() != 11 || newContact.find_first_not_of("0123456789") != string::npos)
-            {
-                cout << "Invalid Contact!" << endl;
-            }
-            else
-            {
-                target->contact = newContact;
-            }
-        }
-        else if (choice != 0)
-        {
-            cout << "Invalid choice!" << endl;
-        }
-    } while (choice != 0);
-
-    cout << "Patient record updated." << endl;
+    patient->email = email;
+    saveToFile();
+    return true;
 }
 
-void PatientList::deletePatient(int id)
+bool PatientList::updateName(int id, const std::string &name)
 {
-    if (patients.empty())
-    {
-        cout << "List is empty." << endl;
-        return;
-    }
+    Patient *patient = searchById(id);
+    if (!patient || name.empty())
+        return false;
 
+    patient->name = name;
+    saveToFile();
+    return true;
+}
+
+bool PatientList::updateAge(int id, int age)
+{
+    Patient *patient = searchById(id);
+    if (!patient || age <= 0 || age > 120)
+        return false;
+
+    patient->age = age;
+    saveToFile();
+    return true;
+}
+
+bool PatientList::updateGender(int id, const std::string &gender)
+{
+    Patient *patient = searchById(id);
+    if (!patient || gender.empty())
+        return false;
+
+    patient->gender = gender;
+    saveToFile();
+    return true;
+}
+
+bool PatientList::updateContact(int id, const std::string &contact)
+{
+    Patient *patient = searchById(id);
+    if (!patient || contact.size() != 11)
+        return false;
+
+    if (contact.find_first_not_of("0123456789") != std::string::npos)
+        return false;
+
+    patient->contact = contact;
+    saveToFile();
+    return true;
+}
+
+bool PatientList::deletePatient(int id)
+{
+    bubbleSort();
     int index = binarySearch(id);
     if (index == -1)
-    {
-        cout << "Patient not found!" << endl;
-        return;
-    }
+        return false;
 
     patients.erase(patients.begin() + index);
-    cout << "Patient deleted." << endl;
+    saveToFile();
+    return true;
 }
 
 void PatientList::sortById()
 {
-    if (patients.size() < 2)
-    {
-        cout << "Nothing to sort." << endl;
-        return;
-    }
-
     bubbleSort();
-    cout << "Records sorted by ID." << endl;
+    saveToFile();
 }
 
-void PatientList::displayAll()
+const std::vector<Patient> &PatientList::getPatients() const
 {
-    if (patients.empty())
-    {
-        cout << "No patients registered yet." << endl;
-        return;
-    }
-
-    cout << "\n--- Patient Records ---" << endl;
-    for (size_t i = 0; i < patients.size(); i++)
-    {
-        cout << "ID: " << formatId(patients[i].id)
-             << " | Name: " << patients[i].name
-             << " | Age: " << patients[i].age
-             << " | Gender: " << patients[i].gender
-             << " | Contact: " << patients[i].contact << endl;
-    }
-    cout << "-----------------------" << endl;
+    return patients;
 }
 
 void PatientList::saveToFile()
 {
-    ofstream file("data/patients.txt");
+    std::ofstream file("data/patients.txt");
     if (!file)
         return;
 
-    for (size_t i = 0; i < patients.size(); i++)
+    for (const Patient &patient : patients)
     {
-        file << patients[i].id << ","
-             << patients[i].name << ","
-             << patients[i].age << ","
-             << patients[i].gender << ","
-             << patients[i].contact << endl;
+        file << patient.id << ','
+             << patient.name << ','
+             << patient.age << ','
+             << patient.gender << ','
+             << patient.contact << ','
+             << patient.email << '\n';
     }
-    file.close();
 }
 
 void PatientList::loadFromFile()
 {
-    ifstream file("data/patients.txt");
+    std::ifstream file("data/patients.txt");
     if (!file)
         return;
 
-    string idStr, name, ageStr, gender, contact;
-    while (getline(file, idStr, ','))
+    std::string idText, name, ageText, gender, contact, email;
+    while (std::getline(file, idText, ','))
     {
-        if (idStr.empty())
+        if (idText.empty())
             continue;
-        getline(file, name, ',');
-        getline(file, ageStr, ',');
-        getline(file, gender, ',');
-        getline(file, contact);
 
-        int id = stoi(idStr);
-        int age = stoi(ageStr);
+        std::getline(file, name, ',');
+        std::getline(file, ageText, ',');
+        std::getline(file, gender, ',');
+        std::getline(file, contact, ',');
+        std::getline(file, email);
 
-        patients.push_back(Patient(id, name, age, gender, contact));
+        try
+        {
+            int id = std::stoi(idText);
+            int age = std::stoi(ageText);
+            patients.push_back(Patient(id, name, age, gender, contact, email));
+        }
+        catch (const std::exception &)
+        {
+            continue;
+        }
     }
-    file.close();
     bubbleSort();
 }

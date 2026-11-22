@@ -5,7 +5,6 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello Muneer\n";
-
+    displayMenu();
     return 0;
 }
