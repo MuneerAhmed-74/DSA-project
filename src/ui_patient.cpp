@@ -60,7 +60,7 @@ static string getGender()
     int choice;
     while (true)
     {
-        cout << "Select Gender:\n1. Male\n2. Female\n3. Other\nChoice: ";
+        cout << "\n\tSelect Gender:\n\t\t1. Male\n\t\t2. Female\n\t\t3. Other\n\n\tChoice: ";
         if (cin >> choice && choice >= 1 && choice <= 3)
         {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -107,6 +107,8 @@ static void displayPatient(const Patient &patient)
 	  Gender             | {{GENDER}}                           
 	                     |                                      
 	  Contact            | {{CONTACT}}                          
+	                     |                                      
+	  Email              | {{EMAIL}}                            
 	+--------------------+--------------------------------------+
 )";
 
@@ -126,6 +128,9 @@ static void displayPatient(const Patient &patient)
 
     position = table.find("{{CONTACT}}");
     table.replace(position, 11, patient.contact);
+
+    position = table.find("{{EMAIL}}");
+    table.replace(position, 9, patient.email);
 
     cout << table << '\n';
 }
@@ -160,14 +165,11 @@ static void displayUpdateMenu()
 {
     displayHeading("\t\t\tUpdate Patient\n");
 
-    cout << "\n\t |1. ID" << "\t\t |5. Contact"
-         << "\n\t |" << "\t\t\t |"
-         << "\n\t |2. Name" << "\t\t |6. Back"
-         << "\n\t |" << "\t\t\t |"
-         << "\n\t |3. Age" << "\t\t |"
-         << "\n\t |" << "\t\t\t |"
-         << "\n\t |4. Gender"
-         << "\n\n\tSelect a field to update: ";
+    cout << "\n\tSelect a field to update:\n"
+         << "\n\t |1. Email" << "\t\t |3. Age" << "\t\t |5. Contact"
+         << "\n\t |" << "\t\t\t |" << "\t\t\t |"
+         << "\n\t |2. Name" << "\t\t |4. Gender" << "\t\t |6. Back"
+         << "\n\n\tEnter choice: ";
 }
 
 void displayPatientMenu()
@@ -196,11 +198,11 @@ void displayPatientMenu()
         {
             displayHeading("\t\t\tRegister Patient\n");
 
-            cout << "Enter Name: ";
+            cout << "\n\tEnter Name: ";
             string name = getValidName();
 
             int age;
-            cout << "Enter Age: ";
+            cout << "\n\tEnter Age: ";
             while (!(cin >> age) || age <= 0 || age > 120)
             {
                 cin.clear();
@@ -212,18 +214,27 @@ void displayPatientMenu()
             string gender = getGender();
 
             string contact;
-            cout << "Enter Contact: ";
+            cout << "\n\tEnter Contact: ";
             getline(cin, contact);
             while (contact.size() != 11 || contact.find_first_not_of("0123456789") != string::npos)
             {
-                cout << "Invalid! 11 digits required: ";
+                cout << "\n\tInvalid! 11 digits required: ";
                 getline(cin, contact);
             }
 
-            if (list.addPatient(name, age, gender, contact))
-                cout << "Patient registered successfully.\n";
+            string email;
+            cout << "\n\tEnter Email: ";
+            getline(cin, email);
+            while (email.find('@') == string::npos)
+            {
+                cout << "\n\tInvalid Email! Must contain '@': ";
+                getline(cin, email);
+            }
+
+            if (list.addPatient(name, age, gender, contact, email))
+                cout << "\n\tPatient registered successfully.\n";
             else
-                cout << "Unable to register patient.\n";
+                cout << "\n\tUnable to register patient.\n";
 
             waitForEnter();
             break;
@@ -236,7 +247,7 @@ void displayPatientMenu()
             int id = getPatientId("\n\tEnter ID to update (e.g. 1 for P-001): ");
             if (!list.searchById(id))
             {
-                cout << "Patient not found!\n";
+                cout << "\tPatient not found!\n";
                 waitForEnter();
                 break;
             }
@@ -255,24 +266,19 @@ void displayPatientMenu()
 
                 if (field == 1)
                 {
-                    int newId;
-                    cout << "\n\tEnter New ID: ";
-                    while (!(cin >> newId) || newId <= 0)
+                    string email;
+                    cout << "\n\tEnter New Email: ";
+                    getline(cin, email);
+                    while (email.find('@') == string::npos)
                     {
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        cout << "Invalid ID! Enter again: ";
+                        cout << "\n\tInvalid Email! Must contain '@': ";
+                        getline(cin, email);
                     }
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    if (list.updateId(id, newId))
-                    {
-                        id = newId;
-                        cout << "\n\tPatient ID updated successfully.\n";
-                    }
+
+                    if (list.updateEmail(id, email))
+                        cout << "\n\tPatient email updated successfully.\n";
                     else
-                    {
-                        cout << "\n\tInvalid ID or ID already exists.\n";
-                    }
+                        cout << "\n\tUnable to update patient email.\n";
                 }
                 else if (field == 2)
                 {

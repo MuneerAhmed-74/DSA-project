@@ -50,7 +50,8 @@ int PatientList::getNextId()
 }
 
 bool PatientList::addPatient(const std::string &name, int age,
-                             const std::string &gender, const std::string &contact)
+                             const std::string &gender, const std::string &contact,
+                             const std::string &email)
 {
     if (name.empty() || age <= 0 || age > 120 || contact.size() != 11)
         return false;
@@ -58,8 +59,11 @@ bool PatientList::addPatient(const std::string &name, int age,
     if (contact.find_first_not_of("0123456789") != std::string::npos)
         return false;
 
+    if (email.find('@') == std::string::npos)
+        return false;
+
     int id = getNextId();
-    patients.push_back(Patient(id, name, age, gender, contact));
+    patients.push_back(Patient(id, name, age, gender, contact, email));
     bubbleSort();
     saveToFile();
     return true;
@@ -72,23 +76,13 @@ Patient *PatientList::searchById(int id)
     return index == -1 ? nullptr : &patients[index];
 }
 
-bool PatientList::updateId(int oldId, int newId)
+bool PatientList::updateEmail(int id, const std::string &email)
 {
-    if (newId <= 0 || oldId == newId)
+    Patient *patient = searchById(id);
+    if (!patient || email.find('@') == std::string::npos)
         return false;
 
-    for (const Patient &patient : patients)
-    {
-        if (patient.id == newId)
-            return false;
-    }
-
-    Patient *patient = searchById(oldId);
-    if (!patient)
-        return false;
-
-    patient->id = newId;
-    bubbleSort();
+    patient->email = email;
     saveToFile();
     return true;
 }
@@ -175,7 +169,8 @@ void PatientList::saveToFile()
              << patient.name << ','
              << patient.age << ','
              << patient.gender << ','
-             << patient.contact << '\n';
+             << patient.contact << ','
+             << patient.email << '\n';
     }
 }
 
@@ -185,7 +180,7 @@ void PatientList::loadFromFile()
     if (!file)
         return;
 
-    std::string idText, name, ageText, gender, contact;
+    std::string idText, name, ageText, gender, contact, email;
     while (std::getline(file, idText, ','))
     {
         if (idText.empty())
@@ -194,13 +189,14 @@ void PatientList::loadFromFile()
         std::getline(file, name, ',');
         std::getline(file, ageText, ',');
         std::getline(file, gender, ',');
-        std::getline(file, contact);
+        std::getline(file, contact, ',');
+        std::getline(file, email);
 
         try
         {
             int id = std::stoi(idText);
             int age = std::stoi(ageText);
-            patients.push_back(Patient(id, name, age, gender, contact));
+            patients.push_back(Patient(id, name, age, gender, contact, email));
         }
         catch (const std::exception &)
         {
