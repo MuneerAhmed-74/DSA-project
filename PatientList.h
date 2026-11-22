@@ -10,7 +10,7 @@ class PatientList {
 private:
     vector<Patient> patients;
     void bubbleSort();
-    int findIndex(int id);
+    int binarySearch(int id);
 
 public:
     PatientList();

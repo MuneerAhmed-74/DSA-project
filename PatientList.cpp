@@ -25,17 +25,26 @@ void PatientList::bubbleSort() {
     } while (swapped);
 }
 
-int PatientList::findIndex(int id) {
-    for (size_t i = 0; i < patients.size(); i++) {
-        if (patients[i].id == id) {
-            return (int)i;
+int PatientList::binarySearch(int id) {
+    bubbleSort();
+    int low = 0;
+    int high = (int)patients.size() - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (patients[mid].id == id) {
+            return mid;
+        }
+        if (patients[mid].id < id) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
         }
     }
     return -1;
 }
 
 bool PatientList::patientExists(int id) {
-    return findIndex(id) != -1;
+    return binarySearch(id) != -1;
 }
 
 int PatientList::getNextId() {
@@ -89,7 +98,7 @@ void PatientList::addPatient(string name, int age, string gender, string contact
 }
 
 Patient* PatientList::searchById(int id) {
-    int index = findIndex(id);
+    int index = binarySearch(id);
     if (index == -1) {
         return NULL;
     }
@@ -152,7 +161,7 @@ void PatientList::deletePatient(int id) {
         return;
     }
 
-    int index = findIndex(id);
+    int index = binarySearch(id);
     if (index == -1) {
         cout << "Patient not found!" << endl;
         return;
