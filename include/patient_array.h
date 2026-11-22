@@ -1,12 +1,13 @@
-#ifndef PATIENTLIST_H
-#define PATIENTLIST_H
+#ifndef PATIENTARRAY_H
+#define PATIENTARRAY_H
 
-#include "Patient.h"
+#include "patient.h"
 #include <string>
 #include <vector>
 using namespace std;
 
-class PatientList {
+class PatientList
+{
 private:
     vector<Patient> patients;
     void bubbleSort();
@@ -21,7 +22,7 @@ public:
     string getGender();
     string formatName(string name);
     void addPatient(string name, int age, string gender, string contact);
-    Patient* searchById(int id);
+    Patient *searchById(int id);
     void updatePatient(int id);
     void deletePatient(int id);
     void sortById();
