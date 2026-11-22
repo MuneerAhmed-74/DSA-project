@@ -72,6 +72,27 @@ Patient *PatientList::searchById(int id)
     return index == -1 ? nullptr : &patients[index];
 }
 
+bool PatientList::updateId(int oldId, int newId)
+{
+    if (newId <= 0 || oldId == newId)
+        return false;
+
+    for (const Patient &patient : patients)
+    {
+        if (patient.id == newId)
+            return false;
+    }
+
+    Patient *patient = searchById(oldId);
+    if (!patient)
+        return false;
+
+    patient->id = newId;
+    bubbleSort();
+    saveToFile();
+    return true;
+}
+
 bool PatientList::updateName(int id, const std::string &name)
 {
     Patient *patient = searchById(id);
