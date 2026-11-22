@@ -16,6 +16,7 @@ public:
     bool patientExists(int id);
     int getNextId();
     string getGender();
+    string formatName(string name);
     void addPatient(string name, int age, string gender, string contact);
     Patient* searchById(int id);
     void updatePatient(int id);

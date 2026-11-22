@@ -32,6 +32,7 @@ void registerPatient(PatientList& list) {
     cin.ignore(1000, '\n');
     cout << "Enter Name: ";
     getline(cin, name);
+    name = list.formatName(name);
     cout << "Enter Age: ";
     cin >> age;
     cin.ignore();

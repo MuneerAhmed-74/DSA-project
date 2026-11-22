@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
+#include <cctype>
 
 PatientList::PatientList() {
     head = NULL;
@@ -55,6 +56,17 @@ string PatientList::getGender() {
     if (c == 1) return "Male";
     if (c == 2) return "Female";
     return "Other";
+}
+
+string PatientList::formatName(string name) {
+    for (size_t i = 0; i < name.size(); i++) {
+        if (i == 0 || name[i - 1] == ' ') {
+            name[i] = toupper(name[i]);
+        } else {
+            name[i] = tolower(name[i]);
+        }
+    }
+    return name;
 }
 
 void PatientList::addPatient(string name, int age, string gender, string contact) {
