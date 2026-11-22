@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-class PatientList
+class PatientArray
 {
 private:
     std::vector<Patient> patients;
@@ -17,8 +17,8 @@ private:
     void loadFromFile();
 
 public:
-    PatientList();
-    ~PatientList();
+    PatientArray();
+    ~PatientArray();
 
     bool addPatient(const std::string &name, int age,
                     const std::string &gender, const std::string &contact,

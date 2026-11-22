@@ -135,7 +135,7 @@ static void displayPatient(const Patient &patient)
     cout << table << '\n';
 }
 
-static void displayPatients(const PatientList &list)
+static void displayPatients(const PatientArray &list)
 {
     const vector<Patient> &patients = list.getPatients();
     if (patients.empty())
@@ -174,7 +174,7 @@ static void displayUpdateMenu()
 
 void displayPatientMenu()
 {
-    PatientList list;
+    PatientArray list;
     int choice;
 
     do

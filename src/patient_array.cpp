@@ -2,17 +2,17 @@
 #include <algorithm>
 #include <fstream>
 
-PatientList::PatientList()
+PatientArray::PatientArray()
 {
     loadFromFile();
 }
 
-PatientList::~PatientList()
+PatientArray::~PatientArray()
 {
     saveToFile();
 }
 
-void PatientList::bubbleSort()
+void PatientArray::bubbleSort()
 {
     for (size_t i = 0; i < patients.size(); ++i)
     {
@@ -26,7 +26,7 @@ void PatientList::bubbleSort()
     }
 }
 
-int PatientList::binarySearch(int id)
+int PatientArray::binarySearch(int id)
 {
     int low = 0;
     int high = static_cast<int>(patients.size()) - 1;
@@ -44,14 +44,14 @@ int PatientList::binarySearch(int id)
     return -1;
 }
 
-int PatientList::getNextId()
+int PatientArray::getNextId()
 {
     return patients.empty() ? 1 : patients.back().id + 1;
 }
 
-bool PatientList::addPatient(const std::string &name, int age,
-                             const std::string &gender, const std::string &contact,
-                             const std::string &email)
+bool PatientArray::addPatient(const std::string &name, int age,
+                              const std::string &gender, const std::string &contact,
+                              const std::string &email)
 {
     if (name.empty() || age <= 0 || age > 120 || contact.size() != 11)
         return false;
@@ -69,14 +69,14 @@ bool PatientList::addPatient(const std::string &name, int age,
     return true;
 }
 
-Patient *PatientList::searchById(int id)
+Patient *PatientArray::searchById(int id)
 {
     bubbleSort();
     int index = binarySearch(id);
     return index == -1 ? nullptr : &patients[index];
 }
 
-bool PatientList::updateEmail(int id, const std::string &email)
+bool PatientArray::updateEmail(int id, const std::string &email)
 {
     Patient *patient = searchById(id);
     if (!patient || email.find('@') == std::string::npos)
@@ -87,7 +87,7 @@ bool PatientList::updateEmail(int id, const std::string &email)
     return true;
 }
 
-bool PatientList::updateName(int id, const std::string &name)
+bool PatientArray::updateName(int id, const std::string &name)
 {
     Patient *patient = searchById(id);
     if (!patient || name.empty())
@@ -98,7 +98,7 @@ bool PatientList::updateName(int id, const std::string &name)
     return true;
 }
 
-bool PatientList::updateAge(int id, int age)
+bool PatientArray::updateAge(int id, int age)
 {
     Patient *patient = searchById(id);
     if (!patient || age <= 0 || age > 120)
@@ -109,7 +109,7 @@ bool PatientList::updateAge(int id, int age)
     return true;
 }
 
-bool PatientList::updateGender(int id, const std::string &gender)
+bool PatientArray::updateGender(int id, const std::string &gender)
 {
     Patient *patient = searchById(id);
     if (!patient || gender.empty())
@@ -120,7 +120,7 @@ bool PatientList::updateGender(int id, const std::string &gender)
     return true;
 }
 
-bool PatientList::updateContact(int id, const std::string &contact)
+bool PatientArray::updateContact(int id, const std::string &contact)
 {
     Patient *patient = searchById(id);
     if (!patient || contact.size() != 11)
@@ -134,7 +134,7 @@ bool PatientList::updateContact(int id, const std::string &contact)
     return true;
 }
 
-bool PatientList::deletePatient(int id)
+bool PatientArray::deletePatient(int id)
 {
     bubbleSort();
     int index = binarySearch(id);
@@ -146,18 +146,18 @@ bool PatientList::deletePatient(int id)
     return true;
 }
 
-void PatientList::sortById()
+void PatientArray::sortById()
 {
     bubbleSort();
     saveToFile();
 }
 
-const std::vector<Patient> &PatientList::getPatients() const
+const std::vector<Patient> &PatientArray::getPatients() const
 {
     return patients;
 }
 
-void PatientList::saveToFile()
+void PatientArray::saveToFile()
 {
     std::ofstream file("data/patients.txt");
     if (!file)
@@ -174,7 +174,7 @@ void PatientList::saveToFile()
     }
 }
 
-void PatientList::loadFromFile()
+void PatientArray::loadFromFile()
 {
     std::ifstream file("data/patients.txt");
     if (!file)
