@@ -14,7 +14,8 @@ public:
     ~PatientList();
 
     bool patientExists(int id);
-    void addPatient(int id, string name, int age, string gender, string contact);
+    int getNextId();
+    void addPatient(string name, int age, string gender, string contact);
     Patient* searchById(int id);
     void updatePatient(int id);
     void deletePatient(int id);

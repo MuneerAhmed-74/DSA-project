@@ -26,12 +26,10 @@ int getChoice() {
 }
 
 void registerPatient(PatientList& list) {
-    int id, age;
+    int age;
     string name, gender, contact;
 
-    cout << "Enter ID: ";
-    cin >> id;
-    cin.ignore();
+    cin.ignore(1000, '\n');
     cout << "Enter Name: ";
     getline(cin, name);
     cout << "Enter Age: ";
@@ -42,7 +40,7 @@ void registerPatient(PatientList& list) {
     cout << "Enter Contact: ";
     getline(cin, contact);
 
-    list.addPatient(id, name, age, gender, contact);
+    list.addPatient(name, age, gender, contact);
 }
 
 void updatePatient(PatientList& list) {

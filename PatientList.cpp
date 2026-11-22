@@ -29,15 +29,24 @@ bool PatientList::patientExists(int id) {
     return false;
 }
 
-void PatientList::addPatient(int id, string name, int age, string gender, string contact) {
-    if (id <= 0 || age <= 0) {
-        cout << "Invalid ID or Age!" << endl;
+int PatientList::getNextId() {
+    int maxId = 0;
+    Patient* temp = head;
+    while (temp != NULL) {
+        if (temp->id > maxId) {
+            maxId = temp->id;
+        }
+        temp = temp->next;
+    }
+    return maxId + 1;
+}
+
+void PatientList::addPatient(string name, int age, string gender, string contact) {
+    if (age <= 0) {
+        cout << "Invalid Age!" << endl;
         return;
     }
-    if (patientExists(id)) {
-        cout << "Patient ID " << id << " already exists!" << endl;
-        return;
-    }
+    int id = getNextId();
 
     Patient* newNode = new Patient(id, name, age, gender, contact);
     if (head == NULL) {
@@ -50,7 +59,7 @@ void PatientList::addPatient(int id, string name, int age, string gender, string
         temp->next = newNode;
     }
     saveToFile();
-    cout << "Patient registered successfully." << endl;
+    cout << "Patient registered successfully. ID: " << id << endl;
 }
 
 Patient* PatientList::searchById(int id) {
