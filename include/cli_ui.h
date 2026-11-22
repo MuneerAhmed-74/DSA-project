@@ -10,5 +10,6 @@ void displayHeading();
 void displayLogo();
 void displayMenu();
 void displayAbout();
+void displayEnd();
 
 #endif
