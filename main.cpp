@@ -35,8 +35,7 @@ void registerPatient(PatientList& list) {
     cout << "Enter Age: ";
     cin >> age;
     cin.ignore();
-    cout << "Enter Gender: ";
-    getline(cin, gender);
+    gender = list.getGender();
     cout << "Enter Contact: ";
     getline(cin, contact);
 

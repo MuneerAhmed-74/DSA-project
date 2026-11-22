@@ -41,6 +41,22 @@ int PatientList::getNextId() {
     return maxId + 1;
 }
 
+string PatientList::getGender() {
+    cout << "Select Gender:\n1. Male\n2. Female\n3. Other" << endl;
+    int c;
+    while (true) {
+        cout << "Choice: ";
+        if (cin >> c && c >= 1 && c <= 3) break;
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid choice!" << endl;
+    }
+    cin.ignore(1000, '\n');
+    if (c == 1) return "Male";
+    if (c == 2) return "Female";
+    return "Other";
+}
+
 void PatientList::addPatient(string name, int age, string gender, string contact) {
     if (age <= 0) {
         cout << "Invalid Age!" << endl;
