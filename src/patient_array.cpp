@@ -257,7 +257,7 @@ void PatientList::displayAll()
 
 void PatientList::saveToFile()
 {
-    ofstream file("patients.txt");
+    ofstream file("data/patients.txt");
     if (!file)
         return;
 
@@ -274,7 +274,7 @@ void PatientList::saveToFile()
 
 void PatientList::loadFromFile()
 {
-    ifstream file("patients.txt");
+    ifstream file("data/patients.txt");
     if (!file)
         return;
 
