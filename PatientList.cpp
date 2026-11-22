@@ -86,7 +86,6 @@ void PatientList::addPatient(string name, int age, string gender, string contact
         }
         temp->next = newNode;
     }
-    saveToFile();
     cout << "Patient registered successfully. ID: " << formatId(id) << endl;
 }
 
@@ -148,7 +147,6 @@ void PatientList::updatePatient(int id) {
         }
     } while (choice != 0);
 
-    saveToFile();
     cout << "Patient record updated." << endl;
 }
 
@@ -162,7 +160,6 @@ void PatientList::deletePatient(int id) {
         Patient* temp = head;
         head = head->next;
         delete temp;
-        saveToFile();
         cout << "Patient deleted." << endl;
         return;
     }
@@ -181,7 +178,6 @@ void PatientList::deletePatient(int id) {
 
     prev->next = curr->next;
     delete curr;
-    saveToFile();
     cout << "Patient deleted." << endl;
 }
 
