@@ -5,39 +5,32 @@
 #include <cctype>
 
 PatientList::PatientList() {
-    head = NULL;
     loadFromFile();
 }
 
 PatientList::~PatientList() {
     saveToFile();
-    Patient* curr = head;
-    while (curr != NULL) {
-        Patient* temp = curr;
-        curr = curr->next;
-        delete temp;
+}
+
+int PatientList::findIndex(int id) {
+    for (size_t i = 0; i < patients.size(); i++) {
+        if (patients[i].id == id) {
+            return (int)i;
+        }
     }
+    return -1;
 }
 
 bool PatientList::patientExists(int id) {
-    Patient* temp = head;
-    while (temp != NULL) {
-        if (temp->id == id) {
-            return true;
-        }
-        temp = temp->next;
-    }
-    return false;
+    return findIndex(id) != -1;
 }
 
 int PatientList::getNextId() {
     int maxId = 0;
-    Patient* temp = head;
-    while (temp != NULL) {
-        if (temp->id > maxId) {
-            maxId = temp->id;
+    for (size_t i = 0; i < patients.size(); i++) {
+        if (patients[i].id > maxId) {
+            maxId = patients[i].id;
         }
-        temp = temp->next;
     }
     return maxId + 1;
 }
@@ -76,28 +69,16 @@ void PatientList::addPatient(string name, int age, string gender, string contact
     }
     int id = getNextId();
 
-    Patient* newNode = new Patient(id, name, age, gender, contact);
-    if (head == NULL) {
-        head = newNode;
-    } else {
-        Patient* temp = head;
-        while (temp->next != NULL) {
-            temp = temp->next;
-        }
-        temp->next = newNode;
-    }
+    patients.push_back(Patient(id, name, age, gender, contact));
     cout << "Patient registered successfully. ID: " << formatId(id) << endl;
 }
 
 Patient* PatientList::searchById(int id) {
-    Patient* temp = head;
-    while (temp != NULL) {
-        if (temp->id == id) {
-            return temp;
-        }
-        temp = temp->next;
+    int index = findIndex(id);
+    if (index == -1) {
+        return NULL;
     }
-    return NULL;
+    return &patients[index];
 }
 
 void PatientList::updatePatient(int id) {
@@ -151,38 +132,23 @@ void PatientList::updatePatient(int id) {
 }
 
 void PatientList::deletePatient(int id) {
-    if (head == NULL) {
+    if (patients.empty()) {
         cout << "List is empty." << endl;
         return;
     }
 
-    if (head->id == id) {
-        Patient* temp = head;
-        head = head->next;
-        delete temp;
-        cout << "Patient deleted." << endl;
-        return;
-    }
-
-    Patient* prev = head;
-    Patient* curr = head->next;
-    while (curr != NULL && curr->id != id) {
-        prev = curr;
-        curr = curr->next;
-    }
-
-    if (curr == NULL) {
+    int index = findIndex(id);
+    if (index == -1) {
         cout << "Patient not found!" << endl;
         return;
     }
 
-    prev->next = curr->next;
-    delete curr;
+    patients.erase(patients.begin() + index);
     cout << "Patient deleted." << endl;
 }
 
 void PatientList::sortById() {
-    if (head == NULL || head->next == NULL) {
+    if (patients.size() < 2) {
         cout << "Nothing to sort." << endl;
         return;
     }
@@ -190,17 +156,11 @@ void PatientList::sortById() {
     bool swapped;
     do {
         swapped = false;
-        Patient* curr = head;
-        while (curr->next != NULL) {
-            if (curr->id > curr->next->id) {
-                swap(curr->id, curr->next->id);
-                swap(curr->name, curr->next->name);
-                swap(curr->age, curr->next->age);
-                swap(curr->gender, curr->next->gender);
-                swap(curr->contact, curr->next->contact);
+        for (size_t i = 0; i + 1 < patients.size(); i++) {
+            if (patients[i].id > patients[i + 1].id) {
+                swap(patients[i], patients[i + 1]);
                 swapped = true;
             }
-            curr = curr->next;
         }
     } while (swapped);
 
@@ -208,20 +168,18 @@ void PatientList::sortById() {
 }
 
 void PatientList::displayAll() {
-    if (head == NULL) {
+    if (patients.empty()) {
         cout << "No patients registered yet." << endl;
         return;
     }
 
     cout << "\n--- Patient Records ---" << endl;
-    Patient* temp = head;
-    while (temp != NULL) {
-        cout << "ID: " << formatId(temp->id)
-             << " | Name: " << temp->name
-             << " | Age: " << temp->age
-             << " | Gender: " << temp->gender
-             << " | Contact: " << temp->contact << endl;
-        temp = temp->next;
+    for (size_t i = 0; i < patients.size(); i++) {
+        cout << "ID: " << formatId(patients[i].id)
+             << " | Name: " << patients[i].name
+             << " | Age: " << patients[i].age
+             << " | Gender: " << patients[i].gender
+             << " | Contact: " << patients[i].contact << endl;
     }
     cout << "-----------------------" << endl;
 }
@@ -230,14 +188,12 @@ void PatientList::saveToFile() {
     ofstream file("patients.txt");
     if (!file) return;
 
-    Patient* temp = head;
-    while (temp != NULL) {
-        file << temp->id << ","
-             << temp->name << ","
-             << temp->age << ","
-             << temp->gender << ","
-             << temp->contact << endl;
-        temp = temp->next;
+    for (size_t i = 0; i < patients.size(); i++) {
+        file << patients[i].id << ","
+             << patients[i].name << ","
+             << patients[i].age << ","
+             << patients[i].gender << ","
+             << patients[i].contact << endl;
     }
     file.close();
 }
@@ -257,16 +213,7 @@ void PatientList::loadFromFile() {
         int id = stoi(idStr);
         int age = stoi(ageStr);
 
-        Patient* newNode = new Patient(id, name, age, gender, contact);
-        if (head == NULL) {
-            head = newNode;
-        } else {
-            Patient* temp = head;
-            while (temp->next != NULL) {
-                temp = temp->next;
-            }
-            temp->next = newNode;
-        }
+        patients.push_back(Patient(id, name, age, gender, contact));
     }
     file.close();
 }

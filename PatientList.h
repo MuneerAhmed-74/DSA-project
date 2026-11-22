@@ -3,11 +3,13 @@
 
 #include "Patient.h"
 #include <string>
+#include <vector>
 using namespace std;
 
 class PatientList {
 private:
-    Patient* head;
+    vector<Patient> patients;
+    int findIndex(int id);
 
 public:
     PatientList();

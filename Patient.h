@@ -4,7 +4,6 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
-#include <cstddef>
 using namespace std;
 
 inline string formatId(int id) {
@@ -13,14 +12,12 @@ inline string formatId(int id) {
     return oss.str();
 }
 
-class Patient {
-public:
+struct Patient {
     int id;
     string name;
     int age;
     string gender;
     string contact;
-    Patient* next;
 
     Patient(int pId, string pName, int pAge, string pGender, string pContact) {
         id = pId;
@@ -28,7 +25,6 @@ public:
         age = pAge;
         gender = pGender;
         contact = pContact;
-        next = NULL;
     }
 };
 
