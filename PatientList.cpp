@@ -108,28 +108,45 @@ void PatientList::updatePatient(int id) {
         return;
     }
 
-    string newName, newGender, newContact;
-    int newAge;
+    int choice;
+    do {
+        cout << "\n1. Name\n2. Age\n3. Gender\n4. Contact\n0. Done\nWhat to update: ";
+        if (!(cin >> choice)) {
+            cin.clear();
+            choice = -1;
+        }
+        cin.ignore(1000, '\n');
 
-    cin.ignore();
-    cout << "Enter New Name: ";
-    getline(cin, newName);
-    cout << "Enter New Age: ";
-    cin >> newAge;
-    if (newAge <= 0) {
-        cout << "Invalid Age! Update cancelled." << endl;
-        return;
-    }
-    cin.ignore();
-    cout << "Enter New Gender: ";
-    getline(cin, newGender);
-    cout << "Enter New Contact: ";
-    getline(cin, newContact);
-
-    target->name = newName;
-    target->age = newAge;
-    target->gender = newGender;
-    target->contact = newContact;
+        if (choice == 1) {
+            cout << "Enter New Name: ";
+            getline(cin, target->name);
+            target->name = formatName(target->name);
+        } else if (choice == 2) {
+            int newAge = 0;
+            cout << "Enter New Age: ";
+            cin >> newAge;
+            cin.clear();
+            cin.ignore(1000, '\n');
+            if (newAge <= 0 || newAge > 120) {
+                cout << "Invalid Age!" << endl;
+            } else {
+                target->age = newAge;
+            }
+        } else if (choice == 3) {
+            target->gender = getGender();
+        } else if (choice == 4) {
+            string newContact;
+            cout << "Enter New Contact: ";
+            getline(cin, newContact);
+            if (newContact.size() != 11 || newContact.find_first_not_of("0123456789") != string::npos) {
+                cout << "Invalid Contact!" << endl;
+            } else {
+                target->contact = newContact;
+            }
+        } else if (choice != 0) {
+            cout << "Invalid choice!" << endl;
+        }
+    } while (choice != 0);
 
     saveToFile();
     cout << "Patient record updated." << endl;
