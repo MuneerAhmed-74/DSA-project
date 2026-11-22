@@ -12,6 +12,19 @@ PatientList::~PatientList() {
     saveToFile();
 }
 
+void PatientList::bubbleSort() {
+    bool swapped;
+    do {
+        swapped = false;
+        for (size_t i = 0; i + 1 < patients.size(); i++) {
+            if (patients[i].id > patients[i + 1].id) {
+                swap(patients[i], patients[i + 1]);
+                swapped = true;
+            }
+        }
+    } while (swapped);
+}
+
 int PatientList::findIndex(int id) {
     for (size_t i = 0; i < patients.size(); i++) {
         if (patients[i].id == id) {
@@ -26,13 +39,10 @@ bool PatientList::patientExists(int id) {
 }
 
 int PatientList::getNextId() {
-    int maxId = 0;
-    for (size_t i = 0; i < patients.size(); i++) {
-        if (patients[i].id > maxId) {
-            maxId = patients[i].id;
-        }
+    if (patients.empty()) {
+        return 1;
     }
-    return maxId + 1;
+    return patients.back().id + 1;
 }
 
 string PatientList::getGender() {
@@ -70,6 +80,11 @@ void PatientList::addPatient(string name, int age, string gender, string contact
     int id = getNextId();
 
     patients.push_back(Patient(id, name, age, gender, contact));
+    size_t i = patients.size() - 1;
+    while (i > 0 && patients[i - 1].id > patients[i].id) {
+        swap(patients[i - 1], patients[i]);
+        i--;
+    }
     cout << "Patient registered successfully. ID: " << formatId(id) << endl;
 }
 
@@ -153,17 +168,7 @@ void PatientList::sortById() {
         return;
     }
 
-    bool swapped;
-    do {
-        swapped = false;
-        for (size_t i = 0; i + 1 < patients.size(); i++) {
-            if (patients[i].id > patients[i + 1].id) {
-                swap(patients[i], patients[i + 1]);
-                swapped = true;
-            }
-        }
-    } while (swapped);
-
+    bubbleSort();
     cout << "Records sorted by ID." << endl;
 }
 
@@ -216,4 +221,5 @@ void PatientList::loadFromFile() {
         patients.push_back(Patient(id, name, age, gender, contact));
     }
     file.close();
+    bubbleSort();
 }

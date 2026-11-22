@@ -9,6 +9,7 @@ using namespace std;
 class PatientList {
 private:
     vector<Patient> patients;
+    void bubbleSort();
     int findIndex(int id);
 
 public:
