@@ -9,6 +9,7 @@ void border();
 void displayHeading(std::string text);
 void displayLogo();
 void displayMenu();
+void waitForEnter();
 void displayAbout();
 void displayEnd();
 

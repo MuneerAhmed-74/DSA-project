@@ -97,6 +97,12 @@ void displayAbout()
     cout << "\n";
 }
 
+void waitForEnter()
+{
+    cout << "\n\tPress Enter to return...";
+    cin.get();
+}
+
 void displayMenu()
 {
     int choice = 0;
@@ -115,8 +121,7 @@ void displayMenu()
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "\033[31m\t\tInvalid input. Enter a number (1-4).\033[0m\n";
-            cout << "\n\tPress Enter to return...";
-            cin.get();
+            waitForEnter();
             continue;
         }
 
@@ -126,8 +131,7 @@ void displayMenu()
         {
         case 1:
             displayAbout();
-            cout << "\n\tPress Enter to return...";
-            cin.get();
+            waitForEnter();
             break;
 
         case 2:
@@ -144,8 +148,7 @@ void displayMenu()
 
         default:
             cout << "\033[31m\t\tInvalid input. Enter a number (1-4).\033[0m\n";
-            cout << "\n\tPress Enter to return...";
-            cin.get();
+            waitForEnter();
             break;
         }
     }

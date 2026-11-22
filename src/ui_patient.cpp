@@ -124,45 +124,37 @@ void displayPatientMenu()
         displayMenuOptions();
         choice = getChoice();
 
-        if (choice == 1)
+        switch (choice)
         {
-            cout << "Enter Name: ";
-            string name = getValidName();
+        case 1:
+            displayHeading("\t\t\tDisplay Patients\n");
+            displayPatients(list);
+            waitForEnter();
+            break;
 
-            int age;
-            cout << "Enter Age: ";
-            while (!(cin >> age) || age <= 0 || age > 120)
-            {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Invalid age! Enter again: ";
-            }
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        case 2:
+            displayHeading("\t\t\tExit Patient Menu\n");
+            cout << "Exiting patient menu...\n";
+            waitForEnter();
+            break;
 
-            string gender = getGender();
+        case 3:
+            displayHeading("\t\t\tSort Patients\n");
+            list.sortById();
+            displayPatients(list);
+            waitForEnter();
+            break;
 
-            string contact;
-            cout << "Enter Contact: ";
-            getline(cin, contact);
-            while (contact.size() != 11 || contact.find_first_not_of("0123456789") != string::npos)
-            {
-                cout << "Invalid! 11 digits required: ";
-                getline(cin, contact);
-            }
-
-            if (list.addPatient(name, age, gender, contact))
-                cout << "Patient registered successfully.\n";
-            else
-                cout << "Unable to register patient.\n";
-        }
-        else if (choice == 2)
+        case 4:
         {
+            displayHeading("\t\t\tUpdate Patient\n");
             displayPatients(list);
             int id = getPatientId("Enter ID to update (e.g. 1 for P-001): ");
             if (!list.searchById(id))
             {
                 cout << "Patient not found!\n";
-                continue;
+                waitForEnter();
+                break;
             }
 
             cout << "1. Name\n2. Age\n3. Gender\n4. Contact\n0. Done\nWhat to update: ";
@@ -208,15 +200,13 @@ void displayPatientMenu()
                 cout << "What to update: ";
             }
             cout << "Patient record updated.\n";
+            waitForEnter();
+            break;
         }
-        else if (choice == 3)
+
+        case 5:
         {
-            displayPatients(list);
-            int id = getPatientId("Enter ID to delete (e.g. 1 for P-001): ");
-            cout << (list.deletePatient(id) ? "Patient deleted.\n" : "Patient not found!\n");
-        }
-        else if (choice == 4)
-        {
+            displayHeading("\t\t\tSearch Patient by ID\n");
             int id = getPatientId("Enter ID to search (e.g. 1 for P-001): ");
             Patient *patient = list.searchById(id);
             if (patient)
@@ -231,23 +221,27 @@ void displayPatientMenu()
             {
                 cout << "Patient not found!\n";
             }
+            waitForEnter();
+            break;
         }
-        else if (choice == 5)
-        {
-            list.sortById();
-            displayPatients(list);
-        }
-        else if (choice == 6)
-        {
-            displayPatients(list);
-        }
-        else if (choice == 0)
-        {
-            cout << "Exiting...\n";
-        }
-        else if (choice != -1)
-        {
+
+        case 6:
+            displayHeading("\t\t\tSearch Patient by Name\n");
+            // Search by name: not implemented yet.
+            waitForEnter();
+            break;
+
+        case -1:
+            displayHeading("\t\t\tInvalid Input\n");
+            cout << "Invalid input!\n";
+            waitForEnter();
+            break;
+
+        default:
+            displayHeading("\t\t\tInvalid Choice\n");
             cout << "Invalid choice!\n";
+            waitForEnter();
+            break;
         }
-    } while (choice != 0);
+    } while (choice != 2);
 }
