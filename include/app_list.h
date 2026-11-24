@@ -24,6 +24,7 @@ public:
     bool cancelApp(int appID);
     const AppNode *getQueue() const;
     const AppNode *getHistory() const;
+    int getNextAppID() const;
 
     void saveToFile();
     void loadFromFile();
