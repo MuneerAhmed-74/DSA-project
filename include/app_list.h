@@ -7,8 +7,10 @@ using namespace std;
 class AppList
 {
 private:
-    AppNode *head;
-    AppNode *tail;
+    AppNode *front;
+    AppNode *rear;
+
+    AppNode *historyHead;
 
     string getStatusString(AppStatus Status);
 
@@ -19,8 +21,9 @@ public:
     void requestApp(int appID, int patientID, string time, string date);
     void processNextApp();
 
-    void cancelApp();
-    void displayAllApp();
+    void cancelApp(int appID);
+    void displayQueue();
+    void displayHistory();
 
     void saveToFile();
     void loadFromFile();
