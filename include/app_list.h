@@ -22,8 +22,8 @@ public:
     bool processNextApp();
 
     bool cancelApp(int appID);
-    void displayQueue();
-    void displayHistory();
+    const AppNode *getQueue() const;
+    const AppNode *getHistory() const;
 
     void saveToFile();
     void loadFromFile();

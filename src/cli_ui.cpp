@@ -1,5 +1,6 @@
 #include "cli_ui.h"
 #include "ui_patient.h"
+#include "ui_app.h"
 #include <cstdlib>
 #include <thread>
 #include <chrono>
@@ -143,7 +144,7 @@ void displayMenu()
             break;
 
         case 4:
-            cout << "\n\tAppointments option selected.\n";
+            displayAppointmentMenu();
             break;
 
         default:

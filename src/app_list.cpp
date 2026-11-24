@@ -17,19 +17,19 @@ AppList::~AppList()
 {
     saveToFile();
     AppNode *curr = front;
-    while (curr->next != nullptr)
+    while (curr != nullptr)
     {
-        AppNode *temp = curr;
-        curr = curr->next;
-        delete temp;
+        AppNode *next = curr->next;
+        delete curr;
+        curr = next;
     }
 
     curr = historyHead;
-    while (curr->next != nullptr)
+    while (curr != nullptr)
     {
-        AppNode *temp = curr;
-        curr = curr->next;
-        delete temp;
+        AppNode *next = curr->next;
+        delete curr;
+        curr = next;
     }
 }
 
@@ -123,6 +123,37 @@ bool AppList::cancelApp(int appID)
     return true;
 }
 
+const AppNode *AppList::getQueue() const
+{
+    return front;
+}
+
+const AppNode *AppList::getHistory() const
+{
+    return historyHead;
+}
+
+int AppList::getNextAppID() const
+{
+    int nextID = 1;
+    const AppNode *curr = front;
+    while (curr != nullptr)
+    {
+        if (curr->appID >= nextID)
+            nextID = curr->appID + 1;
+        curr = curr->next;
+    }
+
+    curr = historyHead;
+    while (curr != nullptr)
+    {
+        if (curr->appID >= nextID)
+            nextID = curr->appID + 1;
+        curr = curr->next;
+    }
+    return nextID;
+}
+
 void AppList::saveToFile()
 {
     ofstream file("data/appointments.txt");
@@ -184,10 +215,17 @@ void AppList::loadFromFile()
                 rear = newNode;
             }
         }
-        else
+        else if (historyHead == nullptr)
         {
-            newNode->next = historyHead;
             historyHead = newNode;
         }
+        else
+        {
+            AppNode *tail = historyHead;
+            while (tail->next != nullptr)
+                tail = tail->next;
+            tail->next = newNode;
+        }
     }
+    file.close();
 }
