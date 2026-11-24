@@ -223,6 +223,13 @@ void displayAppointmentMenu()
         case 6:
         {
             displayHeading("\t\t\tCancel Appointment\n");
+            if (appointments.getQueue() == nullptr)
+            {
+                cout << "\n\tNo appointments in the queue to cancel.\n";
+                waitForEnter();
+                break;
+            }
+
             displayAppointments(appointments.getQueue(), "\n\tNo appointments in the queue.");
             int appID = getPositiveInt("\n\tEnter Appointment ID to cancel (e.g. 1 for A-001): ");
             if (appointments.cancelApp(appID))
