@@ -13,7 +13,7 @@ static void displayMenuOptions()
     cout << "\n\tSelect an action to perform:\n"
          << "\n\t |1. Display" << "\t\t |3. Register" << "\t\t|5. Search By ID"
          << "\n\t |" << "\t\t\t |" << "\t\t\t|"
-         << "\n\t |2. Exit"
+         << "\n\t |2. Back"
          << "\t\t |4. Update" << "\t\t|6. Sort"
          << "\n\n\t\tEnter choice: ";
 }
