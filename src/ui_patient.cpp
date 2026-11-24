@@ -1,7 +1,6 @@
 #include "ui_patient.h"
 #include "cli_ui.h"
 #include "patient_array.h"
-#include "patient.h"
 #include <iostream>
 #include <limits>
 #include <string>

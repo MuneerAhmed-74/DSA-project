@@ -1,7 +1,7 @@
 #ifndef PATIENTARRAY_H
 #define PATIENTARRAY_H
 
-#include "patient.h"
+#include "models.h"
 #include <string>
 #include <vector>
 
