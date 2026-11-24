@@ -14,7 +14,7 @@ static void displayMenuOptions()
          << "\n\t |1. Display" << "\t\t |3. Register" << "\t\t|5. Search By ID"
          << "\n\t |" << "\t\t\t |" << "\t\t\t|"
          << "\n\t |2. Back"
-         << "\t\t |4. Update" << "\t\t|6. Sort"
+         << "\t\t |4. Update" << "\t\t|6. Delete"
          << "\n\n\t\tEnter choice: ";
 }
 
@@ -338,11 +338,43 @@ void displayPatientMenu()
         }
 
         case 6:
-            displayHeading("\t\t\tSort Patients\n");
-            list.sortById();
+        {
+            displayHeading("\t\t\tDelete Patient\n");
             displayPatients(list);
+            if (list.getPatients().empty())
+            {
+                waitForEnter();
+                break;
+            }
+
+            int id = getPatientId("\n\tEnter ID to delete (e.g. 1 for P-001): ");
+            Patient *patient = list.searchById(id);
+            if (!patient)
+            {
+                cout << "\n\tPatient not found!\n";
+                waitForEnter();
+                break;
+            }
+
+            cout << "\n\tDelete " << formatId(patient->id) << " - " << patient->name
+                 << "? (y/n): ";
+            char confirmation;
+            cin >> confirmation;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            if (tolower(static_cast<unsigned char>(confirmation)) == 'y')
+            {
+                if (list.deletePatient(id))
+                    cout << "\n\tPatient deleted successfully.\n";
+                else
+                    cout << "\n\tUnable to delete patient.\n";
+            }
+            else
+            {
+                cout << "\n\tDeletion cancelled.\n";
+            }
             waitForEnter();
             break;
+        }
 
         case -1:
             displayHeading("\t\t\tInvalid Input\n");
