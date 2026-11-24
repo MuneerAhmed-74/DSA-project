@@ -170,7 +170,7 @@ void displayAppointmentMenu()
         {
         case 1:
             displayHeading("\t\t\tAppointment Queue\n");
-            displayAppointments(appointments.getQueue(), "No appointments in the queue.");
+            displayAppointments(appointments.getQueue(), "\n\tNo appointments in the queue.");
             waitForEnter();
             break;
 
@@ -217,14 +217,14 @@ void displayAppointmentMenu()
 
         case 5:
             displayHeading("\t\t\tAppointment History\n");
-            displayAppointments(appointments.getHistory(), "No appointment history yet.");
+            displayAppointments(appointments.getHistory(), "\n\tNo appointment history yet.");
             waitForEnter();
             break;
 
         case 6:
         {
             displayHeading("\t\t\tCancel Appointment\n");
-            displayAppointments(appointments.getQueue(), "No appointments in the queue.");
+            displayAppointments(appointments.getQueue(), "\n\tNo appointments in the queue.");
             int appID = getPositiveInt("\n\tEnter Appointment ID to cancel (e.g. 1 for A-001): ");
             if (appointments.cancelApp(appID))
                 cout << "\n\tAppointment " << appIdText(appID) << " cancelled.\n";
