@@ -1,15 +1,21 @@
 #include "app_list.h"
 #include "models.h"
+#include <fstream>
+#include <iostream>
+
+using namespace std;
 
 AppList::AppList()
 {
     front = nullptr;
     rear = nullptr;
     historyHead = nullptr;
+    loadFromFile();
 }
 
 AppList::~AppList()
 {
+    saveToFile();
     AppNode *curr = front;
     while (curr->next != nullptr)
     {
@@ -115,4 +121,73 @@ bool AppList::cancelApp(int appID)
     historyHead = currNode;
 
     return true;
+}
+
+void AppList::saveToFile()
+{
+    ofstream file("data/appointments.txt");
+    if (!file.is_open())
+    {
+        cout << "Error opening file for saving.\n";
+        return;
+    }
+
+    AppNode *curr = front;
+    while (curr != nullptr)
+    {
+        file << curr->appID << " " << curr->patientID << " "
+             << curr->date << " " << curr->time << " " << curr->status << "\n";
+        curr = curr->next;
+    }
+
+    curr = historyHead;
+    while (curr != nullptr)
+    {
+        file << curr->appID << " " << curr->patientID << " "
+             << curr->date << " " << curr->time << " " << curr->status << "\n";
+        curr = curr->next;
+    }
+
+    file.close();
+}
+
+void AppList::loadFromFile()
+{
+    ifstream file("data/appointments.txt");
+    if (!file.is_open())
+    {
+        return;
+    }
+
+    int appID, patientID, statusInt;
+    string date, time;
+
+    while (file >> appID >> patientID >> date >> time >> statusInt)
+    {
+        AppNode *newNode = new AppNode();
+        newNode->appID = appID;
+        newNode->patientID = patientID;
+        newNode->date = date;
+        newNode->time = time;
+        newNode->status = static_cast<AppStatus>(statusInt);
+        newNode->next = nullptr;
+
+        if (newNode->status == SCHEDULED)
+        {
+            if (front == nullptr)
+            {
+                front = rear = newNode;
+            }
+            else
+            {
+                rear->next = newNode;
+                rear = newNode;
+            }
+        }
+        else
+        {
+            newNode->next = historyHead;
+            historyHead = newNode;
+        }
+    }
 }
