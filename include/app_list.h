@@ -18,7 +18,8 @@ public:
     AppList();
     ~AppList();
 
-    void requestApp(int appID, int patientID, string time, string date);
+    bool requestApp(int appID, int patientID, string time, string date);
+    bool hasScheduledSlot(const string &time, const string &date) const;
     bool processNextApp();
 
     bool cancelApp(int appID);

@@ -42,8 +42,11 @@ string AppList::getStatusString(AppStatus status)
     return "Cancelled";
 }
 
-void AppList::requestApp(int appID, int patientID, string time, string date)
+bool AppList::requestApp(int appID, int patientID, string time, string date)
 {
+    if (hasScheduledSlot(time, date))
+        return false;
+
     AppNode *newNode = new AppNode();
     newNode->appID = appID;
     newNode->patientID = patientID;
@@ -59,6 +62,19 @@ void AppList::requestApp(int appID, int patientID, string time, string date)
         rear->next = newNode;
         rear = newNode;
     }
+    return true;
+}
+
+bool AppList::hasScheduledSlot(const string &time, const string &date) const
+{
+    const AppNode *curr = front;
+    while (curr != nullptr)
+    {
+        if (curr->date == date && curr->time == time)
+            return true;
+        curr = curr->next;
+    }
+    return false;
 }
 
 bool AppList::processNextApp()

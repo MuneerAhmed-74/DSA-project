@@ -190,9 +190,18 @@ void displayAppointmentMenu()
 
             string date = getDate();
             string time = getTime();
+            if (appointments.hasScheduledSlot(time, date))
+            {
+                cout << "\n\tThat date and time is already booked. Choose another slot.\n";
+                waitForEnter();
+                break;
+            }
+
             int appID = appointments.getNextAppID();
-            appointments.requestApp(appID, patientID, time, date);
-            cout << "\n\tAppointment " << appIdText(appID) << " added to the queue.\n";
+            if (appointments.requestApp(appID, patientID, time, date))
+                cout << "\n\tAppointment " << appIdText(appID) << " added to the queue.\n";
+            else
+                cout << "\n\tThat date and time is already booked. Choose another slot.\n";
             waitForEnter();
             break;
         }
