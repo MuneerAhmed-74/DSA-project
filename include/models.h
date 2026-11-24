@@ -41,7 +41,8 @@ struct AppNode
 {
     int appID;
     int patientID;
-    string timeSlot;
+    string time;
+    string date;
     AppStatus status;
     AppNode *next;
 };
