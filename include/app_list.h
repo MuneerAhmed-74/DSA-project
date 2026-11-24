@@ -19,9 +19,9 @@ public:
     ~AppList();
 
     void requestApp(int appID, int patientID, string time, string date);
-    void processNextApp();
+    bool processNextApp();
 
-    void cancelApp(int appID);
+    bool cancelApp(int appID);
     void displayQueue();
     void displayHistory();
 
