@@ -6,7 +6,6 @@
 #include <chrono>
 #include <iostream>
 #include <string>
-#include <limits>
 using namespace std;
 
 void clearScreen()
@@ -120,13 +119,13 @@ void displayMenu()
         if (!(cin >> choice))
         {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             cout << "\033[31m\t\tInvalid input. Enter a number (1-4).\033[0m\n";
             waitForEnter();
             continue;
         }
 
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(1000, '\n');
 
         switch (choice)
         {

@@ -2,7 +2,6 @@
 #include "cli_ui.h"
 #include "patient_array.h"
 #include <iostream>
-#include <limits>
 #include <string>
 #include <cctype>
 
@@ -24,11 +23,11 @@ static int getChoice()
     if (!(cin >> choice))
     {
         cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(1000, '\n');
         cout << "Invalid input!\n";
         return -1;
     }
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(1000, '\n');
     return choice;
 }
 
@@ -46,8 +45,8 @@ static string getValidName()
         }
         else
         {
-            c = inWord ? static_cast<char>(tolower(static_cast<unsigned char>(c)))
-                       : static_cast<char>(toupper(static_cast<unsigned char>(c)));
+            c = inWord ? static_cast<char>(tolower(c))
+                       : static_cast<char>(toupper(c));
             inWord = true;
         }
     }
@@ -62,11 +61,11 @@ static string getGender()
         cout << "\n\tSelect Gender:\n\t\t1. Male\n\t\t2. Female\n\t\t3. Other\n\n\tChoice: ";
         if (cin >> choice && choice >= 1 && choice <= 3)
         {
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             break;
         }
         cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(1000, '\n');
         cout << "Invalid choice!\n";
     }
 
@@ -84,10 +83,10 @@ static int getPatientId(const string &prompt)
     while (!(cin >> id) || id <= 0)
     {
         cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(1000, '\n');
         cout << "Invalid ID! Enter again: ";
     }
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(1000, '\n');
     return id;
 }
 
@@ -205,10 +204,10 @@ void displayPatientMenu()
             while (!(cin >> age) || age <= 0 || age > 120)
             {
                 cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cin.ignore(1000, '\n');
                 cout << "Invalid age! Enter again: ";
             }
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
 
             string gender = getGender();
 
@@ -256,7 +255,7 @@ void displayPatientMenu()
             int field;
             while (cin >> field)
             {
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cin.ignore(1000, '\n');
                 if (field == 0)
                     break;
 
@@ -293,7 +292,7 @@ void displayPatientMenu()
                     else
                         cout << "\n\tInvalid Age!\n";
                     cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cin.ignore(1000, '\n');
                 }
                 else if (field == 4)
                 {
@@ -360,8 +359,8 @@ void displayPatientMenu()
                  << "? (y/n): ";
             char confirmation;
             cin >> confirmation;
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            if (tolower(static_cast<unsigned char>(confirmation)) == 'y')
+            cin.ignore(1000, '\n');
+            if (tolower(confirmation) == 'y')
             {
                 if (list.deletePatient(id))
                     cout << "\n\tPatient deleted successfully.\n";

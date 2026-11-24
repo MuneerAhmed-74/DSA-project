@@ -6,7 +6,6 @@
 #include <cctype>
 #include <iomanip>
 #include <iostream>
-#include <limits>
 #include <sstream>
 #include <string>
 
@@ -29,10 +28,10 @@ namespace
         if (!(cin >> choice))
         {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             return -1;
         }
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(1000, '\n');
         return choice;
     }
 
@@ -43,10 +42,10 @@ namespace
         while (!(cin >> value) || value <= 0)
         {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             cout << "\tEnter a positive number: ";
         }
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(1000, '\n');
         return value;
     }
 
@@ -56,7 +55,7 @@ namespace
             return false;
         for (size_t i = 0; i < date.size(); ++i)
         {
-            if (i != 4 && i != 7 && !isdigit(static_cast<unsigned char>(date[i])))
+            if (i != 4 && i != 7 && !isdigit(date[i]))
                 return false;
         }
         return true;
@@ -66,10 +65,10 @@ namespace
     {
         if (time.size() != 5 || time[2] != ':')
             return false;
-        if (!isdigit(static_cast<unsigned char>(time[0])) ||
-            !isdigit(static_cast<unsigned char>(time[1])) ||
-            !isdigit(static_cast<unsigned char>(time[3])) ||
-            !isdigit(static_cast<unsigned char>(time[4])))
+        if (!isdigit(time[0]) ||
+            !isdigit(time[1]) ||
+            !isdigit(time[3]) ||
+            !isdigit(time[4]))
             return false;
         int hour = stoi(time.substr(0, 2));
         int minute = stoi(time.substr(3, 2));
